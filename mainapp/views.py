@@ -2,11 +2,13 @@ from django.db.models import query
 from mainapp import serializers
 from mainapp.models import Post
 from django.shortcuts import render
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from mainapp.serializers import PostListSerializer, PostCreateSerializer, PostDetailSerializer, PostUpdateSerializer
 from mainapp.pagination import StandardResultsSetPagination
+from mainapp.filters import PostFilter
 
 
 class PostView(APIView):
@@ -29,6 +31,8 @@ class PostListView(generics.ListAPIView):
     queryset = Post.objects.filter(is_active=True)
     serializer_class = PostListSerializer
     pagination_class = StandardResultsSetPagination
+    filter_backend = (DjangoFilterBackend,)
+    filterset_class = PostFilter
 
 
 class PostDetailView(generics.RetrieveAPIView):

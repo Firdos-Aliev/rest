@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 class Post(models.Model):
     name = models.CharField(verbose_name='Название', max_length=64, null=True)
     text = models.TextField(verbose_name='Описание', blank=True)
+    created = models.DateTimeField(verbose_name='Время добавления/обновления', auto_now=True)
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
