@@ -54,7 +54,7 @@ class PostCreateView(generics.CreateAPIView):
     permission_classes = [IsAuth]
 
     def perform_create(self, serializer):
-        # from CreateModelMixin
+        # from CreatModelMixin
         serializer.validated_data['user'] = self.request.user
         serializer.save()
 
@@ -63,16 +63,24 @@ class PostUpdateView(generics.UpdateAPIView):
 
     #queryset = Post.objects.filter(is_active=True)
     serializer_class = PostUpdateSerializer
+    permission_classes = [IsOwner]
 
     def get_queryset(self):
         return Post.objects.filter(is_active=True, pk=self.kwargs['pk'])
+
+    def get(self, request, pk):
+        post_object = Post.objects.filter(is_active=True, pk=pk).first()
+        serializer = PostDetailSerializer(post_object)
+        return Response(serializer.data)
 
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
 
 
 class PostDeleteView(generics.DestroyAPIView):
-    
+
+    permission_classes = [IsOwner]
+
     def get_queryset(self):
         return Post.objects.filter(pk=self.kwargs['pk'])
 
