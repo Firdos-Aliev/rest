@@ -5,7 +5,9 @@ class Post(models.Model):
     name = models.CharField(verbose_name='Название', max_length=64, null=True)
     text = models.TextField(verbose_name='Описание', blank=True)
     created = models.DateTimeField(verbose_name='Время добавления/обновления', auto_now=True)
+    user = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, verbose_name='Пользователь', null=True)
     is_active = models.BooleanField(default=True)
+    
 
     def __str__(self):
         return self.name

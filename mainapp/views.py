@@ -6,9 +6,11 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 from mainapp.serializers import PostListSerializer, PostCreateSerializer, PostDetailSerializer, PostUpdateSerializer
 from mainapp.pagination import StandardResultsSetPagination
 from mainapp.filters import PostFilter
+from mainapp.permissions import IsAuth, IsOwner
 
 
 class PostView(APIView):
@@ -33,12 +35,14 @@ class PostListView(generics.ListAPIView):
     pagination_class = StandardResultsSetPagination
     filter_backend = (DjangoFilterBackend,)
     filterset_class = PostFilter
+    permission_classes = [IsAuth]
 
 
 class PostDetailView(generics.RetrieveAPIView):
 
     #queryset = Post.objects.filter(is_active=True)
     serializer_class = PostDetailSerializer
+    permission_classes = [IsOwner]
 
     def get_queryset(self):
         return Post.objects.filter(is_active=True, pk=self.kwargs['pk'])
@@ -47,6 +51,12 @@ class PostDetailView(generics.RetrieveAPIView):
 class PostCreateView(generics.CreateAPIView):
 
     serializer_class = PostCreateSerializer
+    permission_classes = [IsAuth]
+
+    def perform_create(self, serializer):
+        # from CreateModelMixin
+        serializer.validated_data['user'] = self.request.user
+        serializer.save()
 
 
 class PostUpdateView(generics.UpdateAPIView):
