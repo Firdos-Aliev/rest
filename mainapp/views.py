@@ -7,6 +7,7 @@ from mainapp.pagination import StandardResultsSetPagination
 from mainapp.filters import PostFilter
 from mainapp.permissions import IsAuth, IsOwner
 from mainapp.models import Post
+from django.db.models import Count
 
 
 class PostView(APIView):
@@ -45,12 +46,12 @@ class PostDetailView(generics.RetrieveAPIView):
     Display post with pk
     """
 
-    queryset = Post.objects.filter(is_active=True)
+    #queryset = Post.objects.filter(is_active=True)
     serializer_class = PostDetailSerializer
-    permission_classes = [IsOwner]
+    #permission_classes = [IsOwner]
 
-    # def get_queryset(self):
-    #    return Post.objects.filter(is_active=True, pk=self.kwargs['pk'])
+    def get_queryset(self):
+        return Post.objects.annotate(comment_count=Count('comment'))
 
 
 class PostCreateView(generics.CreateAPIView):

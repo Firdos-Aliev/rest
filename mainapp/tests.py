@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from mainapp.models import Post
 from mainapp.serializers import PostListSerializer
 
+
 class TestCase(APITestCase):
 
     def setUp(self):

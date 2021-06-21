@@ -24,14 +24,15 @@ class PostListSerializer(serializers.ModelSerializer):
 class PostDetailSerializer(serializers.ModelSerializer):
     """Вывод поста"""
     comment_set = CommentSerializer(many=True)
-    comment_count = serializers.SerializerMethodField()
+    #comment_count = serializers.SerializerMethodField()
+    comment_count = serializers.IntegerField()
 
     class Meta:
         model = Post
         fields = "__all__"
 
-    def get_comment_count(self, obj):
-        return obj.comment_set.all().count()
+    #def get_comment_count(self, obj):
+    #    return obj.comment_set.all().count()
 
 
 class PostCreateSerializer(serializers.ModelSerializer):
